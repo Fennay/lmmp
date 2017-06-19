@@ -52,4 +52,35 @@ RUN mkdir -p /webser/src \
 	&& cd /webser/php7/etc \
 	&& cp ./php-fpm.conf.default php-fpm.conf \
 	&& cp ./php-fpm.d/www.conf.default ./php-fpm.d/www.conf \
-	&& /webser/php7/sbin/php-fpm 
+	&& /webser/php7/sbin/php-fpm \
+	&& groupadd mysql \
+	&& useradd -r -g mysql mysql \
+	&& yum -y install cmake ncurses-devel \
+	&& cd /webser/src \
+	&& wget http://dev.mysql.com/get/Downloads/MySQL-5.7/mysql-5.7.14.tar.gz \
+	&& tar zxvf mysql-5.7.14.tar.gz \
+	&& cd mysql-5.7.14 \
+	&& cmake \
+		-DCMAKE_INSTALL_PREFIX=/webser/mysql5.7  \
+		-DMYSQL_DATADIR=/webser/data/mysql/data  \
+		-DSYSCONFDIR=/etc \
+		-DMYSQL_USER=mysql \
+		-DWITH_MYISAM_STORAGE_ENGINE=1 \
+		-DWITH_INNOBASE_STORAGE_ENGINE=1 \
+		-DWITH_ARCHIVE_STORAGE_ENGINE=1 \
+		-DWITH_MEMORY_STORAGE_ENGINE=1 \
+		-DWITH_READLINE=1 \
+		-DMYSQL_UNIX_ADDR=/var/run/mysql/mysql.sock \
+		-DMYSQL_TCP_PORT=3306 \
+		-DENABLED_LOCAL_INFILE=1 \
+		-DENABLE_DOWNLOADS=1 \
+		-DWITH_PARTITION_STORAGE_ENGINE=1  \
+		-DEXTRA_CHARSETS=all \
+		-DDEFAULT_CHARSET=utf8 \
+		-DDEFAULT_COLLATION=utf8_general_ci \
+		-DWITH_DEBUG=0 \
+		-DMYSQL_MAINTAINER_MODE=0 \
+		-DWITH_SSL:STRING=bundled \
+		-DWITH_ZLIB:STRING=bundled \
+		-DDOWNLOAD_BOOST=1 \
+		-DWITH_BOOST=/usr/local/boost
