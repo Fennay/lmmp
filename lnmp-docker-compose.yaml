@@ -1,0 +1,7 @@
+version: '2'
+services:
+  lnmp:
+    image: lnmp:0.2
+    restart: always
+    volumes:
+      - H:\docker\dockerfile\lnmp\code:/webser/www/code
