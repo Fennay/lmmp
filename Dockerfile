@@ -1,5 +1,7 @@
 FROM centos:7
 ENV container docker
+RUN yum -y install openssh-server
+RUN ssh-keygen -A
 RUN mkdir -p /webser/src \
 	&& cd /webser/src \
 	&& yum -y install gcc gcc-c++ \
@@ -58,6 +60,7 @@ RUN mkdir -p /webser/src \
 	&& yum -y install cmake ncurses-devel \
 	&& cd /webser/src \
 	&& wget http://dev.mysql.com/get/Downloads/MySQL-5.7/mysql-5.7.14.tar.gz \
+	&& wget https://www.fennay.com/boost_1_59_0.tar.gz/ \
 	&& tar zxvf mysql-5.7.14.tar.gz \
 	&& cd mysql-5.7.14 \
 	&& cmake \
@@ -82,5 +85,7 @@ RUN mkdir -p /webser/src \
 		-DMYSQL_MAINTAINER_MODE=0 \
 		-DWITH_SSL:STRING=bundled \
 		-DWITH_ZLIB:STRING=bundled \
-		-DDOWNLOAD_BOOST=1 \
-		-DWITH_BOOST=/usr/local/boost
+		-DWITH_BOOST=/usr/local/boost \
+	&& /webser/mysql5.7/support-files/mysql.server start
+	
+ADD run.sh /webser/run.sh 
