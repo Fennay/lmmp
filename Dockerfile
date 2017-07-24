@@ -1,9 +1,15 @@
 FROM centos:7
 ENV container docker
 
+### 创建目录
+RUN mkdir -p /webser/{www,logs,src} \ 
+	&& chown -R www.www /webser/{www,logs}
+
+### 创建pid文件
+RUN touch /var/run/nginx.pid \
+
 ### 安装基础库
-RUN mkdir -p /webser/src \
-	&& yum -y install gcc gcc-c++ \
+RUN yum -y install gcc gcc-c++ \
 	&& yum -y install automake autoconf libtool make \
 	&& yum -y install pcre-devel zlib zlib-devel \
 	&& yum -y install wget vim \
@@ -15,7 +21,7 @@ RUN ssh-keygen -A
 
 ### 创建用户组
 RUN groupadd -r www \
-	&& useradd -s /sbin/nologin -g www -r www
+	&& useradd -s /sbin/nologin -g www -r www \
 
 ### 安装nginx
 RUN	cd /webser/src \
@@ -64,6 +70,10 @@ RUN cd /webser/src \
 	&& cp ./php-fpm.conf.default php-fpm.conf \
 	&& cp ./php-fpm.d/www.conf.default ./php-fpm.d/www.conf \
 	&& /webser/php7/sbin/php-fpm
+
+### 全局安装composer
+RUN wget https://getcomposer.org/composer.phar \
+	&& mv composer.phar /usr/local/bin/composer
 
 ### 执行初始化脚本
 ADD run.sh /run.sh
