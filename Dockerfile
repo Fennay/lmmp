@@ -24,7 +24,7 @@ RUN mkdir -p /webser/{www,logs,src} \
 RUN touch /var/run/nginx.pid \
 
 ### 安装nginx
-RUN	cd /webser/src \
+RUN cd /webser/src \
 	&& wget http://nginx.org/download/nginx-1.10.1.tar.gz \
 	&& tar zxvf nginx-1.10.1.tar.gz \
 	&& cd nginx-1.10.1 \
@@ -72,21 +72,22 @@ RUN cd /webser/src \
 	&& /webser/php7/sbin/php-fpm
 
 ### 添加到环境变量
-RUN echo "export PATH=$PATH:/webser/php7/bin" >> /etc/profile \
+RUN cd /etc \
+	&& echo "export PATH=$PATH:/webser/php7/bin" >> /etc/profile \
 	&& source /etc/profile
 
 ### 编译扩展
-RUN wget https://github.com/phpredis/phpredis/archive/3.1.3.tar.gz \
-	&& tar zxvf 3.1.3.tar.gz && cd phpredis-3.1.3 \
-	&& /webser/php7/bin/phpize \ 
-	&& ./configure --with-php-config=/webser/php7/bin/php-config \ 
-	&& make && make install
+#RUN wget https://github.com/phpredis/phpredis/archive/3.1.3.tar.gz \
+#	&& tar zxvf 3.1.3.tar.gz && cd phpredis-3.1.3 \
+#	&& /webser/php7/bin/phpize \ 
+#	&& ./configure --with-php-config=/webser/php7/bin/php-config \ 
+#	&& make && make install
 
 ### 全局安装composer
 COPY soft/composer.phar /
-RUN mv composer.phar /usr/local/bin/composer \
-	&& composer self-update \
-	&& composer config -g repo.packagist composer https://packagist.phpcomposer.com
+RUN mv composer.phar /usr/local/bin/composer
+#	&& composer self-update \
+#	&& composer config -g repo.packagist composer https://packagist.phpcomposer.com
 
 ### 自行下载
 # RUN /webser/php7/bin/php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
