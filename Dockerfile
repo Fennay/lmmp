@@ -1,13 +1,6 @@
 FROM centos:7
 ENV container docker
 
-### 创建目录
-RUN mkdir -p /webser/{www,logs,src} \ 
-	&& chown -R www.www /webser/{www,logs}
-
-### 创建pid文件
-RUN touch /var/run/nginx.pid \
-
 ### 安装基础库
 RUN yum -y install gcc gcc-c++ \
 	&& yum -y install automake autoconf libtool make \
@@ -21,7 +14,14 @@ RUN ssh-keygen -A
 
 ### 创建用户组
 RUN groupadd -r www \
-	&& useradd -s /sbin/nologin -g www -r www \
+	&& useradd -s /sbin/nologin -g www -r www 
+	
+### 创建目录
+RUN mkdir -p /webser/{www,logs,src} \ 
+	&& chown -R www.www /webser/{www,logs}
+
+### 创建pid文件
+RUN touch /var/run/nginx.pid \
 
 ### 安装nginx
 RUN	cd /webser/src \
@@ -71,9 +71,29 @@ RUN cd /webser/src \
 	&& cp ./php-fpm.d/www.conf.default ./php-fpm.d/www.conf \
 	&& /webser/php7/sbin/php-fpm
 
+### 添加到环境变量
+RUN echo "export PATH=$PATH:/webser/php7/bin" >> /etc/profile \
+	&& source /etc/profile
+
+### 编译扩展
+RUN wget https://github.com/phpredis/phpredis/archive/3.1.3.tar.gz \
+	&& tar zxvf 3.1.3.tar.gz && cd phpredis-3.1.3 \
+	&& /webser/php7/bin/phpize \ 
+	&& ./configure --with-php-config=/webser/php7/bin/php-config \ 
+	&& make && make install
+
 ### 全局安装composer
-RUN wget https://getcomposer.org/composer.phar \
-	&& mv composer.phar /usr/local/bin/composer
+COPY soft/composer.phar /
+RUN mv composer.phar /usr/local/bin/composer \
+	&& composer self-update \
+	&& composer config -g repo.packagist composer https://packagist.phpcomposer.com
+
+### 自行下载
+# RUN /webser/php7/bin/php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
+#	&& /webser/php7/bin/php composer-setup.php \
+#	&& mv composer.phar /usr/local/bin/composer \
+#	&& /webser/php7/bin/php -r "unlink('composer-setup.php');" \
+	
 
 ### 执行初始化脚本
 ADD run.sh /run.sh
