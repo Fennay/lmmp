@@ -94,6 +94,7 @@ RUN cd /webser/src/phpredis-3.1.3 \
 #COPY soft/composer.phar /
 RUN cd /webser/src/ \
 	&& mv composer.phar /usr/local/bin/composer \
+	&& chmod +x /user/local/bin/composer \
 	&& composer self-update \
 	&& composer config -g repo.packagist composer https://packagist.phpcomposer.com
 
