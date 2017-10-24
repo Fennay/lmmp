@@ -27,7 +27,6 @@ RUN touch /var/run/nginx.pid
 ### copy文件进来
 ADD soft/nginx-1.10.1.tar.gz /webser/src/
 ADD soft/php-7.1.6.tar.gz /webser/src/
-ADD soft/phpredis-3.1.3.tar.gz /webser/src/
 ADD soft/composer.phar /webser/src/
 
 ### 安装nginx
@@ -82,13 +81,8 @@ RUN cd /webser/src/php-7.1.6 \
 #	&& source /etc/profile
 ENV PATH $PATH:/webser/php7/bin
 
-### 编译扩展
-#RUN wget https://github.com/phpredis/phpredis/archive/3.1.3.tar.gz \
-#	&& tar zxvf 3.1.3.tar.gz && cd phpredis-3.1.3 \
-RUN cd /webser/src/phpredis-3.1.3 \
-	&& /webser/php7/bin/phpize \ 
-	&& ./configure --with-php-config=/webser/php7/bin/php-config \ 
-	&& make && make install
+### 复制扩展
+COPY ext/* /webser/php7/lib/php/extensions/no-debug-non-zts-20160303/
 
 ### 全局安装composer
 #COPY soft/composer.phar /
@@ -107,4 +101,6 @@ RUN cd /webser/src/ \
 
 ### 执行初始化脚本
 ADD run.sh /run.sh
+### 增加可执行权限
+RUN chmod +x run.sh
 CMD ["sh","./run.sh"]
