@@ -6,4 +6,6 @@
 
 nginx1.10
 
-php7
+php7.1.6
+
+phpredis-3.1.3

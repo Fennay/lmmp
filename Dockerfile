@@ -84,6 +84,9 @@ ENV PATH $PATH:/webser/php7/bin
 ### 复制扩展
 COPY ext/* /webser/php7/lib/php/extensions/no-debug-non-zts-20160303/
 
+### 复制配置文件
+COPY config/www.conf /webser/php7/etc/php-fpm.d/www.conf
+
 ### 全局安装composer
 #COPY soft/composer.phar /
 RUN cd /webser/src/ \
