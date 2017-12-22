@@ -31,7 +31,7 @@ ADD soft/composer.phar /webser/src/
 
 ### 安装nginx
 RUN cd /webser/src/nginx-1.10.1 \
-	&& ./configure --prefix=/webser/nginx \
+	&& ./configure --prefix=/webser/nginx --with-http_ssl_module \
 	&& make && make install \
 	&& /webser/nginx/sbin/nginx
 
