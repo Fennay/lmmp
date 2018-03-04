@@ -18,7 +18,7 @@ RUN groupadd -r www \
 	&& useradd -s /sbin/nologin -g www -r www 
 	
 ### 创建目录
-RUN mkdir -p /webser/{www,logs,src} \ 
+RUN mkdir -p /webser/{www,logs,src,redis} \ 
 	&& chown -R www.www /webser/{www,logs}
 
 ### 创建pid文件
@@ -28,12 +28,16 @@ RUN touch /var/run/nginx.pid
 ADD soft/nginx-1.10.1.tar.gz /webser/src/
 ADD soft/php-7.1.6.tar.gz /webser/src/
 ADD soft/composer.phar /webser/src/
+ADD soft/redis-4.0.8.tar.gz /webser/src/
 
 ### 安装nginx
 RUN cd /webser/src/nginx-1.10.1 \
 	&& ./configure --prefix=/webser/nginx --with-http_ssl_module \
 	&& make && make install \
 	&& /webser/nginx/sbin/nginx
+
+### 安装redis
+RUN 
 
 ### 安装php
 RUN cd /webser/src/php-7.1.6 \
