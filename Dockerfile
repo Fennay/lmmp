@@ -37,7 +37,7 @@ RUN cd /webser/src/nginx-1.10.1 \
 	&& /webser/nginx/sbin/nginx
 
 ### 安装redis
-RUN 
+COPY soft/redis /webser/redis
 
 ### 安装php
 RUN cd /webser/src/php-7.1.6 \
