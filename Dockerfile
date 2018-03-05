@@ -38,6 +38,8 @@ RUN cd /webser/src/nginx-1.10.1 \
 
 ### 安装redis
 COPY soft/redis /webser/redis
+run chmod +x /webser/redis/bin/* \
+	&& mkdir -p /webser/redis/rdb
 
 ### 安装php
 RUN cd /webser/src/php-7.1.6 \
