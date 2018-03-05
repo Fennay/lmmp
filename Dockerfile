@@ -92,7 +92,7 @@ COPY ext/* /webser/php7/lib/php/extensions/no-debug-non-zts-20160303/
 COPY config/www.conf /webser/php7/etc/php-fpm.d/www.conf
 
 ### 全局安装composer
-#COPY soft/composer.phar /
+COPY soft/composer.phar /webser/src/
 RUN cd /webser/src/ \
 	&& mv composer.phar /usr/local/bin/composer \
 	&& chmod +x /usr/local/bin/composer \
@@ -110,4 +110,4 @@ RUN cd /webser/src/ \
 ADD run.sh /run.sh
 ### 增加可执行权限
 RUN chmod +x run.sh
-CMD ["sh","./run.sh"]
+CMD ["sh","/run.sh"]
